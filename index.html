@@ -89,6 +89,7 @@
   }
 
   .saber-rule {
+    position: relative;
     height: 3px;
     width: 100%;
     max-width: 220px;
@@ -98,16 +99,40 @@
     box-shadow: 0 0 10px 1px var(--saber-glow);
     transform-origin: left center;
     transform: scaleX(0);
-    animation: ignite 1s ease-out forwards;
-    animation-delay: 0.15s;
+    overflow: visible;
   }
 
-  @keyframes ignite {
-    to { transform: scaleX(1); }
+  .saber-rule.lit {
+    transform: scaleX(1);
+    transition: transform 1s cubic-bezier(.2,.7,.3,1);
+  }
+
+  .saber-rule::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 14px;
+    height: 15px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff, var(--saber) 60%, transparent 72%);
+    opacity: 0;
+    filter: blur(0.5px);
+  }
+
+  .saber-rule.lit::after {
+    animation: spark-travel 1s cubic-bezier(.2,.7,.3,1);
+  }
+
+  @keyframes spark-travel {
+    0%   { left: 0; opacity: 1; }
+    85%  { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .saber-rule { animation: none; transform: scaleX(1); }
+    .saber-rule, .saber-rule.lit { transform: scaleX(1); transition: none; }
+    .saber-rule::after, .saber-rule.lit::after { display: none; }
   }
 
   /* ---------- Header / hero ---------- */
@@ -252,6 +277,24 @@
     100% { opacity: 0; }
   }
 
+  .holo.materialize .holo-photo-wrap {
+    animation: holo-power-up 1.1s steps(12, end);
+  }
+
+  @keyframes holo-power-up {
+    0%   { opacity: 0; filter: brightness(2.4) saturate(0); clip-path: inset(0 0 92% 0); }
+    15%  { opacity: 1; clip-path: inset(0 0 70% 0); }
+    30%  { opacity: 0.3; clip-path: inset(0 0 55% 0); }
+    45%  { opacity: 1; clip-path: inset(0 0 30% 0); }
+    55%  { opacity: 0.4; clip-path: inset(0 0 18% 0); }
+    70%  { opacity: 1; filter: brightness(1.6) saturate(0.4); clip-path: inset(0 0 4% 0); }
+    100% { opacity: 1; filter: brightness(1) saturate(1); clip-path: inset(0 0 0 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .holo.materialize .holo-photo-wrap { animation: none; }
+  }
+
   .holo-label {
     display: inline-flex;
     align-items: center;
@@ -370,6 +413,43 @@
     border-color: var(--saber);
     box-shadow: 0 0 8px 2px var(--saber-glow);
     transform: scale(1.15);
+  }
+
+  .timeline > li::after {
+    content: "";
+    position: absolute;
+    left: 2.1rem;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(94, 203, 255, 0.16) 45%, transparent 90%);
+    transform: translateX(-115%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .timeline > li.scan-in::after {
+    animation: scan-sweep 1.1s ease-out;
+  }
+
+  .timeline > li.scan-in::before {
+    animation: dot-ping 1.1s ease-out;
+  }
+
+  @keyframes scan-sweep {
+    0%   { transform: translateX(-115%); opacity: 1; }
+    100% { transform: translateX(115%); opacity: 0; }
+  }
+
+  @keyframes dot-ping {
+    0%   { box-shadow: 0 0 0 0 var(--saber-glow); }
+    40%  { box-shadow: 0 0 0 6px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timeline > li::after { display: none; }
+    .timeline > li.scan-in::before { animation: none; }
   }
 
   .job-head {
@@ -601,18 +681,18 @@
     font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: 0.03em;
-    line-height: 1.7;
-    font-size: clamp(1rem, 2.6vw, 1.5rem);
-    animation: crawl-up 9s linear forwards;
-    animation-delay: 0.3s;
+    line-height: 1.85;
+    font-size: clamp(1.05rem, 2.7vw, 1.6rem);
+    animation: crawl-up 22s linear forwards;
+    animation-delay: 0.6s;
     padding-bottom: 4rem;
   }
 
-  .crawl-text p { margin: 0 0 1.6em; }
+  .crawl-text p { margin: 0 0 2em; }
 
   @keyframes crawl-up {
-    from { transform: rotateX(35deg) translateY(72vh); }
-    to   { transform: rotateX(35deg) translateY(-135vh); }
+    from { transform: rotateX(35deg) translateY(78vh); }
+    to   { transform: rotateX(35deg) translateY(-150vh); }
   }
 
   .skip-intro {
@@ -867,13 +947,14 @@
       introHidden = true;
       intro.classList.add('hide');
       setTimeout(function () { intro.style.display = 'none'; }, 950);
+      materializePhoto();
     }
 
     if (reduceMotion) {
       hideIntro();
     } else if (intro) {
       if (skipBtn) skipBtn.addEventListener('click', hideIntro);
-      setTimeout(hideIntro, 9600);
+      setTimeout(hideIntro, 23200);
     }
 
     /* ---------- Hyperspace canvas (intro) ---------- */
@@ -950,6 +1031,13 @@
       });
     }
 
+    var burst = { active: false, start: 0, duration: 700 };
+    function triggerBurst() {
+      if (reduceMotion) return;
+      burst.active = true;
+      burst.start = performance.now();
+    }
+
     function maybeSpawnShooting() {
       if (!shooting && Math.random() < 0.0025) {
         var sx = Math.random() * sfW * 0.6;
@@ -968,6 +1056,31 @@
 
     function drawStarfield(t) {
       sfCtx.clearRect(0, 0, sfW, sfH);
+
+      if (burst.active) {
+        var bp = (t - burst.start) / burst.duration;
+        if (bp >= 1) {
+          burst.active = false;
+        } else {
+          var cx = window.innerWidth / 2;
+          var cy = window.scrollY + window.innerHeight / 2;
+          var intensity = Math.sin(Math.min(bp, 1) * Math.PI);
+          for (var b = 0; b < sfStars.length; b++) {
+            var bs = sfStars[b];
+            var dx = bs.x - cx, dy = bs.y - cy;
+            var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            var ux = dx / dist, uy = dy / dist;
+            var len = intensity * (18 + dist * 0.14);
+            sfCtx.strokeStyle = 'rgba(200,228,255,' + (0.65 * intensity) + ')';
+            sfCtx.lineWidth = 1.3;
+            sfCtx.beginPath();
+            sfCtx.moveTo(bs.x, bs.y);
+            sfCtx.lineTo(bs.x + ux * len, bs.y + uy * len);
+            sfCtx.stroke();
+          }
+        }
+      }
+
       for (var n = 0; n < sfStars.length; n++) {
         var s = sfStars[n];
         var a = s.base + Math.sin(t / 1000 * s.speed + s.phase) * 0.2;
@@ -997,6 +1110,58 @@
       drawStatic();
     } else {
       requestAnimationFrame(drawStarfield);
+    }
+
+    /* ---------- Photo materialize (holo power-up) ---------- */
+    var holoWrap = document.querySelector('.holo');
+    function materializePhoto() {
+      if (reduceMotion || !holoWrap) return;
+      holoWrap.classList.add('materialize');
+    }
+
+    /* ---------- Scroll cues: saber-rule ignite + timeline scan-in + hyperspace pulse ---------- */
+    var saberRules = document.querySelectorAll('.saber-rule');
+    var timelineItems = document.querySelectorAll('.timeline > li');
+    var aboutSection = document.querySelector('.about');
+    var burstFired = false;
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      saberRules.forEach(function (el) { el.classList.add('lit'); });
+      timelineItems.forEach(function (el) { el.classList.add('scan-in'); });
+    } else {
+      var ruleObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('lit');
+            ruleObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.6 });
+      saberRules.forEach(function (el) { ruleObserver.observe(el); });
+
+      var itemObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, idx) {
+          if (entry.isIntersecting) {
+            var target = entry.target;
+            setTimeout(function () { target.classList.add('scan-in'); }, idx * 70);
+            itemObserver.unobserve(target);
+          }
+        });
+      }, { threshold: 0.35, rootMargin: '0px 0px -10% 0px' });
+      timelineItems.forEach(function (el) { itemObserver.observe(el); });
+
+      if (aboutSection) {
+        var burstObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !burstFired) {
+              burstFired = true;
+              triggerBurst();
+              burstObserver.disconnect();
+            }
+          });
+        }, { threshold: 0.2 });
+        burstObserver.observe(aboutSection);
+      }
     }
 
     /* ---------- Copy email to clipboard ---------- */
