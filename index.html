@@ -506,6 +506,15 @@
     background: var(--gold-soft);
     border-radius: var(--radius-s);
     padding: 0.28rem 0.55rem;
+    border: 1px solid transparent;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .metrics li.counting {
+    border-color: var(--saber-dim);
+    box-shadow: 0 0 8px 0 var(--saber-soft);
+    color: var(--text);
+    transform: translateY(-1px);
   }
 
   /* ---------- Contacts ---------- */
@@ -1119,6 +1128,64 @@
       holoWrap.classList.add('materialize');
     }
 
+    /* ---------- Results counters: animate each job's metrics as it scrolls in ---------- */
+    function parseMetricNumber(str) {
+      var range = str.match(/^([^\d]*)(\d+(?:[.,]\d+)?)([^\d]*?→[^\d]*?)(\d+(?:[.,]\d+)?)(.*)$/);
+      if (range) {
+        return {
+          prefix: range[1] + range[2] + range[3],
+          suffix: range[5],
+          start: parseFloat(range[2].replace(',', '.')),
+          end: parseFloat(range[4].replace(',', '.')),
+          decimals: (range[4].split(/[.,]/)[1] || '').length,
+          comma: range[4].indexOf(',') !== -1
+        };
+      }
+      var m = str.match(/^([^\d]*)(\d+(?:[.,]\d+)?)(.*)$/);
+      if (!m) return null;
+      return {
+        prefix: m[1],
+        suffix: m[3],
+        start: 0,
+        end: parseFloat(m[2].replace(',', '.')),
+        decimals: (m[2].split(/[.,]/)[1] || '').length,
+        comma: m[2].indexOf(',') !== -1
+      };
+    }
+
+    function animateMetricEl(el, delay) {
+      var original = el.textContent.trim();
+      var parsed = parseMetricNumber(original);
+      if (!parsed || parsed.end === parsed.start) return;
+      setTimeout(function () {
+        el.classList.add('counting');
+        var dur = 1000;
+        var t0 = performance.now();
+        function frame(now) {
+          var p = Math.min(1, (now - t0) / dur);
+          var eased = 1 - Math.pow(1 - p, 3);
+          var val = parsed.start + (parsed.end - parsed.start) * eased;
+          var formatted = val.toFixed(parsed.decimals);
+          if (parsed.comma) formatted = formatted.replace('.', ',');
+          el.textContent = parsed.prefix + formatted + parsed.suffix;
+          if (p < 1) {
+            requestAnimationFrame(frame);
+          } else {
+            el.textContent = original;
+            el.classList.remove('counting');
+          }
+        }
+        requestAnimationFrame(frame);
+      }, delay || 0);
+    }
+
+    function animateJobResults(li, baseDelay) {
+      var chips = li.querySelectorAll('.metrics li');
+      chips.forEach(function (chip, i) {
+        animateMetricEl(chip, (baseDelay || 0) + i * 130);
+      });
+    }
+
     /* ---------- Scroll cues: saber-rule ignite + timeline scan-in + hyperspace pulse ---------- */
     var saberRules = document.querySelectorAll('.saber-rule');
     var timelineItems = document.querySelectorAll('.timeline > li');
@@ -1143,7 +1210,9 @@
         entries.forEach(function (entry, idx) {
           if (entry.isIntersecting) {
             var target = entry.target;
-            setTimeout(function () { target.classList.add('scan-in'); }, idx * 70);
+            var revealDelay = idx * 70;
+            setTimeout(function () { target.classList.add('scan-in'); }, revealDelay);
+            animateJobResults(target, revealDelay + 250);
             itemObserver.unobserve(target);
           }
         });
