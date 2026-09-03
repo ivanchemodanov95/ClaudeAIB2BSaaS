@@ -727,7 +727,252 @@
     #intro { display: none; }
   }
 
+  /* ---------- Career stats strip ---------- */
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4rem;
+    padding: clamp(1.6rem, 4vw, 2.4rem) 0;
+  }
+
+  .stat-tile {
+    text-align: center;
+    border-left: 1px solid var(--border);
+    padding-left: 1.2rem;
+  }
+
+  .stat-tile:first-child { border-left: none; padding-left: 0; }
+
+  .stat-num {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem);
+    color: var(--saber);
+    text-shadow: 0 0 14px var(--saber-glow);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    display: block;
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.4;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- Skills panel ---------- */
+
+  .skills-panel {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 480px;
+  }
+
+  .skills-caption {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin: 0;
+  }
+
+  .skill-row { display: flex; flex-direction: column; gap: 0.45rem; }
+  .skill-name { font-size: 0.87rem; color: var(--text-dim); }
+
+  .skill-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), var(--saber));
+    box-shadow: 0 0 8px var(--saber-soft);
+    transition: width 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-fill { transition: none; }
+  }
+
+  /* ---------- Mission log (expandable job detail) ---------- */
+
+  details.mission-log {
+    margin-top: 0.9rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.7rem;
+  }
+
+  details.mission-log summary {
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--saber);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  details.mission-log summary::-webkit-details-marker { display: none; }
+
+  details.mission-log summary::before {
+    content: '▸';
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  details.mission-log[open] summary::before { transform: rotate(90deg); }
+  details.mission-log summary:focus-visible { outline: 2px solid var(--saber); outline-offset: 3px; }
+
+  details.mission-log p {
+    margin: 0.6rem 0 0;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    max-width: 58ch;
+  }
+
+  /* ---------- Contact extras: vCard + QR ---------- */
+
+  .contact-extras {
+    margin-top: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.4rem;
+    justify-content: space-between;
+  }
+
+  .vcard-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 1.05rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  }
+
+  .vcard-btn svg { width: 16px; height: 16px; color: var(--saber); flex: none; }
+
+  .vcard-btn:hover, .vcard-btn:focus-visible {
+    border-color: var(--saber-dim);
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+  }
+
+  .vcard-btn:focus-visible { outline: 2px solid var(--saber); outline-offset: 2px; }
+
+  .qr-block { display: flex; align-items: center; gap: 0.7rem; }
+
+  .qr-frame {
+    width: 64px;
+    height: 64px;
+    flex: none;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #f2f3f7;
+    padding: 5px;
+  }
+
+  .qr-frame img { width: 100%; height: 100%; display: block; border-radius: 4px; }
+
+  .qr-caption {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    max-width: 18ch;
+  }
+
+  /* ---------- Recruiter-mode toggle ---------- */
+
+  .mode-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 30;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .mode-toggle:hover, .mode-toggle:focus-visible { border-color: var(--saber-dim); color: var(--saber); }
+  .mode-toggle[aria-pressed="true"] { color: var(--gold); border-color: var(--gold-dim); }
+
+  body.plain-mode #starfield,
+  body.plain-mode #intro,
+  body.plain-mode .hud-cursor {
+    display: none !important;
+  }
+
+  body.plain-mode, body.plain-mode * { cursor: auto !important; }
+  body.plain-mode .holo-ring { animation: none !important; }
+  body.plain-mode .holo-label .blip { animation: none !important; }
+  body.plain-mode .saber-rule::after { display: none !important; }
+  body.plain-mode .timeline > li::after { display: none !important; }
+  body.plain-mode .metrics li { transition: none !important; }
+
+  /* ---------- HUD custom cursor ---------- */
+
+  .hud-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 1.5px solid var(--saber);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--saber-glow);
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0;
+    transform: translate(-9999px, -9999px);
+    transition: width 0.15s ease, height 0.15s ease, margin 0.15s ease, border-color 0.15s ease, opacity 0.2s ease;
+  }
+
+  .hud-cursor.active { opacity: 0.85; }
+
+  .hud-cursor.hover {
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border-color: var(--gold);
+  }
+
+  @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+    .hud-cursor { display: none !important; }
+  }
+
   /* ---------- Mobile ---------- */
+
+
 
   @media (max-width: 640px) {
     header.hero { flex-direction: column; text-align: center; }
@@ -737,10 +982,19 @@
     .job-head { flex-direction: column; align-items: flex-start; }
     footer { flex-direction: column; }
     .saber-rule { max-width: 140px; }
+    .stats { grid-template-columns: repeat(2, 1fr); row-gap: 1.6rem; }
+    .stat-tile:nth-child(3) { border-left: none; }
+    .stat-tile:nth-child(2n+1) { border-left: none; }
+    .skills-panel { max-width: none; }
+    .contact-extras { flex-direction: column; align-items: flex-start; }
+    .mode-toggle { top: 0.6rem; right: 0.6rem; font-size: 0.62rem; padding: 0.4rem 0.7rem; }
   }
 </style>
 </head>
 <body>
+
+<button class="mode-toggle" id="mode-toggle" type="button" aria-pressed="false">Режим для печати</button>
+<div class="hud-cursor" id="hud-cursor" aria-hidden="true"></div>
 
 <div id="intro" aria-hidden="true">
   <canvas id="hyperspace"></canvas>
@@ -781,6 +1035,25 @@
     </div>
   </header>
 
+  <section class="stats" aria-label="Ключевые результаты">
+    <div class="stat-tile">
+      <span class="stat-num">9</span>
+      <span class="stat-label">лет в продукте</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-num">₽500М+</span>
+      <span class="stat-label">выручки за первый квартал</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-num">38</span>
+      <span class="stat-label">человек в команде на пике</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-num">92%</span>
+      <span class="stat-label">выполнение OKR</span>
+    </div>
+  </section>
+
   <section class="about" aria-labelledby="about-title">
     <p class="eyebrow">01 — О себе</p>
     <h2 class="section-title" id="about-title">Обо мне</h2>
@@ -793,6 +1066,26 @@
       <li>Готов к командировкам</li>
       <li>Рассматриваю релокацию</li>
     </ul>
+
+    <div class="skills-panel">
+      <p class="skills-caption">Фокус компетенций</p>
+      <div class="skill-row">
+        <span class="skill-name">Продуктовая стратегия и discovery</span>
+        <div class="skill-track"><div class="skill-fill" data-level="92"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Работа с данными (A/B, аналитика)</span>
+        <div class="skill-track"><div class="skill-fill" data-level="88"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Построение и масштабирование команд</span>
+        <div class="skill-track"><div class="skill-fill" data-level="90"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Коммуникация со стейкхолдерами</span>
+        <div class="skill-track"><div class="skill-fill" data-level="85"></div></div>
+      </div>
+    </div>
   </section>
 
   <section class="experience" aria-labelledby="exp-title">
@@ -815,6 +1108,10 @@
           <li>OKR 92%</li>
           <li>70%+ сервисов мигрировано</li>
         </ul>
+        <details class="mission-log">
+          <summary>Журнал миссии</summary>
+          <p>Частично работал в контуре торгового эквайринга, погружался в эмиссию — разобрался в расчётных схемах между банком-эмитентом и эквайером.</p>
+        </details>
       </li>
 
       <li>
@@ -829,6 +1126,10 @@
           <li>GMV $24М</li>
           <li>2 → 38 человек</li>
         </ul>
+        <details class="mission-log">
+          <summary>Журнал миссии</summary>
+          <p>Выстроил производственный процесс департамента с нуля — отказ от ручных таблиц в пользу автоматизированного флоу; лично нанял и заонбордил около 25 сотрудников.</p>
+        </details>
       </li>
 
       <li>
@@ -843,6 +1144,10 @@
           <li>4 крупных релиза</li>
           <li>выход на международный рынок</li>
         </ul>
+        <details class="mission-log">
+          <summary>Журнал миссии</summary>
+          <p>Спроектировал CJM для разработки телеграм-ботов продукта — параллельно с ролью Founder & Head of Product в Adrenaline VR.</p>
+        </details>
       </li>
 
       <li>
@@ -856,6 +1161,10 @@
           <li>+40% продажи год к году</li>
           <li>лояльность 4,6 / 5</li>
         </ul>
+        <details class="mission-log">
+          <summary>Журнал миссии</summary>
+          <p>Управлял бюджетом и привлечением инвестиций; самостоятельно нанимал, обучал и мотивировал команду студии.</p>
+        </details>
       </li>
 
       <li>
@@ -869,6 +1178,10 @@
           <li>−30% товаров без связей</li>
           <li>команда 2 → 9 человек</li>
         </ul>
+        <details class="mission-log">
+          <summary>Журнал миссии</summary>
+          <p>Роль велась параллельно с основанием Adrenaline VR — осознанное расширение индустриального опыта в retail.</p>
+        </details>
       </li>
 
       <li>
@@ -882,6 +1195,10 @@
           <li>команда 4 человека</li>
           <li>Power BI автоматизация</li>
         </ul>
+        <details class="mission-log">
+          <summary>Журнал миссии</summary>
+          <p>Прошёл путь от стажёра до Strategy Manager (авг–ноя 2018), где формировал бизнес-стратегию роста для отделов продаж и маркетинга.</p>
+        </details>
       </li>
 
     </ul>
@@ -925,6 +1242,18 @@
     </div>
 
     <button class="copy-btn" id="copy-email-btn" type="button">Скопировать email</button>
+
+    <div class="contact-extras">
+      <a class="vcard-btn" id="vcard-btn" href="#" download="Ivan-Chemodanov.vcf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        Сохранить контакт (.vcf)
+      </a>
+
+      <div class="qr-block">
+        <div class="qr-frame" id="qr-frame" aria-hidden="true"></div>
+        <span class="qr-caption">Скан для быстрой передачи ссылки</span>
+      </div>
+    </div>
   </section>
 
   <footer>
@@ -1275,6 +1604,132 @@
       holoPhoto.addEventListener('click', pulseHolo);
       holoPhoto.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pulseHolo(); }
+      });
+    }
+
+    /* ---------- Career stats: animate once visible ---------- */
+    var statNums = document.querySelectorAll('.stat-num');
+    var statsSection = document.querySelector('.stats');
+    if (statNums.length) {
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        /* values already show their final, correctly formatted text */
+      } else {
+        var statsObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              statNums.forEach(function (el, i) { animateMetricEl(el, i * 120); });
+              statsObserver.disconnect();
+            }
+          });
+        }, { threshold: 0.5 });
+        if (statsSection) statsObserver.observe(statsSection);
+      }
+    }
+
+    /* ---------- Skills panel: fill bars on view ---------- */
+    var skillFills = document.querySelectorAll('.skill-fill');
+    var skillsPanel = document.querySelector('.skills-panel');
+    function fillSkills() {
+      skillFills.forEach(function (el, i) {
+        var level = el.getAttribute('data-level') || '0';
+        setTimeout(function () { el.style.width = level + '%'; }, i * 120);
+      });
+    }
+    if (skillFills.length) {
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        skillFills.forEach(function (el) { el.style.width = (el.getAttribute('data-level') || '0') + '%'; });
+      } else {
+        var skillsObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              fillSkills();
+              skillsObserver.disconnect();
+            }
+          });
+        }, { threshold: 0.4 });
+        if (skillsPanel) skillsObserver.observe(skillsPanel);
+      }
+    }
+
+    /* ---------- vCard download ---------- */
+    var vcardBtn = document.getElementById('vcard-btn');
+    if (vcardBtn) {
+      var vcardLines = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'N:Чемоданов;Иван;;;',
+        'FN:Иван Чемоданов',
+        'TITLE:Senior Product Manager',
+        'EMAIL;TYPE=INTERNET:ivan.chemodanov95@gmail.com',
+        'URL:https://t.me/vanya_chem',
+        'URL:https://www.linkedin.com/in/ivan-chemodanov-5419b4121/',
+        'NOTE:Senior Product Manager | AI-native. 9 лет в продукте.',
+        'END:VCARD'
+      ].join('\r\n');
+      try {
+        var vcardBlob = new Blob([vcardLines], { type: 'text/vcard;charset=utf-8' });
+        vcardBtn.href = URL.createObjectURL(vcardBlob);
+      } catch (e) {
+        vcardBtn.href = 'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcardLines);
+      }
+    }
+
+    /* ---------- QR code linking to this page ---------- */
+    var qrFrame = document.getElementById('qr-frame');
+    if (qrFrame) {
+      var pageUrl = window.location.href.split('#')[0];
+      var qrImg = document.createElement('img');
+      qrImg.alt = 'QR-код на этот сайт';
+      qrImg.loading = 'lazy';
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=128x128&margin=0&color=14161c&bgcolor=ffffff&data=' + encodeURIComponent(pageUrl);
+      qrFrame.appendChild(qrImg);
+    }
+
+    /* ---------- Easter egg: type "product" for a hyperspace replay ---------- */
+    if (!reduceMotion) {
+      var typedBuffer = '';
+      window.addEventListener('keydown', function (e) {
+        if (!e.key || e.key.length !== 1) return;
+        typedBuffer = (typedBuffer + e.key.toLowerCase()).slice(-7);
+        if (typedBuffer.indexOf('product') !== -1) {
+          typedBuffer = '';
+          triggerBurst();
+          showToast('Да пребудет с вами продукт ✦');
+        }
+      });
+    }
+
+    /* ---------- HUD custom cursor (fine pointer + hover only) ---------- */
+    var hudCursor = document.getElementById('hud-cursor');
+    var fineHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (hudCursor && fineHover && !reduceMotion) {
+      window.addEventListener('mousemove', function (e) {
+        hudCursor.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+        hudCursor.classList.add('active');
+      });
+      document.addEventListener('mouseleave', function () { hudCursor.classList.remove('active'); });
+      var hoverSelector = 'a, button, summary, [role="button"], .holo-photo-wrap';
+      document.addEventListener('mouseover', function (e) {
+        if (e.target.closest && e.target.closest(hoverSelector)) hudCursor.classList.add('hover');
+      });
+      document.addEventListener('mouseout', function (e) {
+        if (e.target.closest && e.target.closest(hoverSelector)) hudCursor.classList.remove('hover');
+      });
+    }
+
+    /* ---------- Recruiter / print mode toggle ---------- */
+    var modeToggle = document.getElementById('mode-toggle');
+    if (modeToggle) {
+      modeToggle.addEventListener('click', function () {
+        var isPlain = document.body.classList.toggle('plain-mode');
+        modeToggle.setAttribute('aria-pressed', isPlain ? 'true' : 'false');
+        modeToggle.textContent = isPlain ? 'Вернуть эффекты' : 'Режим для печати';
+        if (isPlain) {
+          hideIntro();
+          saberRules.forEach(function (el) { el.classList.add('lit'); });
+          timelineItems.forEach(function (el) { el.classList.add('scan-in'); });
+          skillFills.forEach(function (el) { el.style.width = (el.getAttribute('data-level') || '0') + '%'; });
+        }
       });
     }
   })();
